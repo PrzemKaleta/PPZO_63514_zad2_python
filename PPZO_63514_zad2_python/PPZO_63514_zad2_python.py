@@ -7,6 +7,18 @@ class Account:
         self.balance = float(initial_balance)
         self.transaction_history = []
 
+    def deposit(self, amount):
+        if not isinstance(amount, (int, float)) or amount <= 0:
+            print("Błąd: Kwota wpłaty musi być liczbą dodatnią")
+            return False
+
+        self.balance += amount
+        transaction_obj = Transaction("wpłata", amount, "Wpłata środków")
+        self.transaction_history.append(transaction_obj)
+        print(f"Wpłacono {amount} PLN na konto o numerze {self.account_number}")
+        print(f"Nowe saldo: {self.balance} PLN")
+        return True
+
     def get_balance(self):
         return self.balance
 
@@ -55,6 +67,7 @@ def main():
     while True:
         print("\n--- MENU SYSTEMU BANKOWEGO ---")
         print("1. Utwórz nowe konto")
+        print("2. Wpłać środki na konto")
         print("0. Wyjdź z systemu")
 
         user_choice = input("Wybierz opcję (wpisz numer od 0 do 7): ")
@@ -70,7 +83,7 @@ def main():
                         continue 
                     break 
                 except ValueError:
-                    print("Nieprawidłowa kwota. Wpisz liczbę. Spróbuj ponownie")
+                    print("Nieprawidłowa kwota, wpisz liczbę i spróbuj ponownie")
             
             new_account_object = main_bank.create_account(owner_name_input, initial_balance_value)
             if new_account_object: 
@@ -79,11 +92,26 @@ def main():
                 print(f"  Właściciel: {new_account_object.owner_name}")
                 print(f"  Saldo: {new_account_object.balance} PLN")
 
+        elif user_choice == '2':
+            print("\n--- Wpłata środków ---")
+            account_number_input = input("Podaj numer konta, na które chcesz wpłacić środki: ")
+            target_account = main_bank.get_account(account_number_input)
+            if target_account: 
+                while True:
+                    try:
+                        amount_value = int(input("Podaj kwotę do wpłaty: "))
+                        break 
+                    except ValueError:
+                        print("Nieprawidłowa kwota, wpisz liczbę i spróbuj ponownie")
+                target_account.deposit(amount_value) 
+            else:
+                print(f"Konto o numerze {account_number_input} nie istnieje")
+
         elif user_choice == '0':
             break 
         
         else:
-            print("Nieprawidłowa opcja. Wybierz numer od 0 do 7")
+            print("Nieprawidłowa opcja, wybierz numer od 0 do 7")
         
         if user_choice != '0': 
             input("\n(Naciśnij Enter aby kontynuować...)")
