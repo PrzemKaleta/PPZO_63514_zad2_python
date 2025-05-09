@@ -39,6 +39,15 @@ class Account:
     def get_balance(self):
         return self.balance
 
+    def display_transaction_history(self):
+        print(f"\n--- Historia transakcji dla konta {self.account_number} ({self.owner_name}) ---")
+        if not self.transaction_history:
+            print("Brak transakcji na tym koncie")
+        else:
+            for transaction_item in self.transaction_history:
+                print(transaction_item)
+        print("--- Koniec historii ---")
+
 class Bank:
     def __init__(self):
         self.accounts = {}
@@ -128,6 +137,8 @@ def main():
         print("3. Wypłać środki z konta")
         print("4. Zrób przelew między kontami")
         print("5. Pokaż saldo konta")
+        print("6. Pokaż historię transakcji konta")
+        print("7. Pokaż wszystkie konta w banku")
         print("0. Wyjdź z systemu")
 
         user_choice = input("Wybierz opcję (wpisz numer od 0 do 7): ")
@@ -205,6 +216,25 @@ def main():
                       f"{target_account.get_balance()} PLN")
             else:
                 print(f"Konto o numerze {account_number_input} nie istnieje.")
+
+        elif user_choice == '6':
+            print("\n--- Historia transakcji ---")
+            account_number_input = input("Podaj numer konta, którego historię chcesz zobaczyć: ")
+            target_account = main_bank.get_account(account_number_input)
+            if target_account:
+                target_account.display_transaction_history() 
+            else:
+                print(f"Konto o numerze {account_number_input} nie istnieje")
+        
+        elif user_choice == '7':
+            print("\n--- Lista wszystkich kont ---")
+            if not main_bank.accounts: 
+                print("W banku nie ma jeszcze żadnych kont")
+            else:
+                for account_id, account_obj in main_bank.accounts.items():
+                    print(f"  Numer konta: {account_id}, Właściciel: {account_obj.owner_name}, "
+                          f"Saldo: {account_obj.balance} PLN")
+            print("------------------------------")
 
         elif user_choice == '0':
             break 
